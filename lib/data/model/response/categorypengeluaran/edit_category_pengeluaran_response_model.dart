@@ -1,32 +1,32 @@
 import 'dart:convert';
 
-class EditCateogryPengeluaranResponseModel {
+class EditCategoryPengeluaranResponseModel {
     final String message;
     final int statusCode;
     final Data data;
 
-    EditCateogryPengeluaranResponseModel({
+    EditCategoryPengeluaranResponseModel({
         required this.message,
         required this.statusCode,
         required this.data,
     });
 
-    EditCateogryPengeluaranResponseModel copyWith({
+    EditCategoryPengeluaranResponseModel copyWith({
         String? message,
         int? statusCode,
         Data? data,
     }) => 
-        EditCateogryPengeluaranResponseModel(
+        EditCategoryPengeluaranResponseModel(
             message: message ?? this.message,
             statusCode: statusCode ?? this.statusCode,
             data: data ?? this.data,
         );
 
-    factory EditCateogryPengeluaranResponseModel.fromRawJson(String str) => EditCateogryPengeluaranResponseModel.fromJson(json.decode(str));
+    factory EditCategoryPengeluaranResponseModel.fromRawJson(String str) => EditCategoryPengeluaranResponseModel.fromJson(json.decode(str));
 
     String toRawJson() => json.encode(toJson());
 
-    factory EditCateogryPengeluaranResponseModel.fromJson(Map<String, dynamic> json) => EditCateogryPengeluaranResponseModel(
+    factory EditCategoryPengeluaranResponseModel.fromJson(Map<String, dynamic> json) => EditCategoryPengeluaranResponseModel(
         message: json["message"],
         statusCode: json["status_code"],
         data: Data.fromJson(json["data"]),

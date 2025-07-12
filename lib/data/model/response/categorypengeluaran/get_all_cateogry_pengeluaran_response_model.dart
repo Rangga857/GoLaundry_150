@@ -1,32 +1,32 @@
 import 'dart:convert';
 
-class GetAllCateogryPengeluaranResponseModel {
+class GetAllCategoryPengeluaranResponseModel {
     final String message;
     final int statusCode;
     final List<Datum> data;
 
-    GetAllCateogryPengeluaranResponseModel({
+    GetAllCategoryPengeluaranResponseModel({
         required this.message,
         required this.statusCode,
         required this.data,
     });
 
-    GetAllCateogryPengeluaranResponseModel copyWith({
+    GetAllCategoryPengeluaranResponseModel copyWith({
         String? message,
         int? statusCode,
         List<Datum>? data,
     }) => 
-        GetAllCateogryPengeluaranResponseModel(
+        GetAllCategoryPengeluaranResponseModel(
             message: message ?? this.message,
             statusCode: statusCode ?? this.statusCode,
             data: data ?? this.data,
         );
 
-    factory GetAllCateogryPengeluaranResponseModel.fromRawJson(String str) => GetAllCateogryPengeluaranResponseModel.fromJson(json.decode(str));
+    factory GetAllCategoryPengeluaranResponseModel.fromRawJson(String str) => GetAllCategoryPengeluaranResponseModel.fromJson(json.decode(str));
 
     String toRawJson() => json.encode(toJson());
 
-    factory GetAllCateogryPengeluaranResponseModel.fromJson(Map<String, dynamic> json) => GetAllCateogryPengeluaranResponseModel(
+    factory GetAllCategoryPengeluaranResponseModel.fromJson(Map<String, dynamic> json) => GetAllCategoryPengeluaranResponseModel(
         message: json["message"],
         statusCode: json["status_code"],
         data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),

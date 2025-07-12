@@ -1,32 +1,32 @@
 import 'dart:convert';
 
-class DeleteCateogryPengeluaranResponseModel {
+class DeleteCategoryPengeluaranResponseModel {
     final String message;
     final int statusCode;
     final dynamic data;
 
-    DeleteCateogryPengeluaranResponseModel({
+    DeleteCategoryPengeluaranResponseModel({
         required this.message,
         required this.statusCode,
         required this.data,
     });
 
-    DeleteCateogryPengeluaranResponseModel copyWith({
+    DeleteCategoryPengeluaranResponseModel copyWith({
         String? message,
         int? statusCode,
         dynamic data,
     }) => 
-        DeleteCateogryPengeluaranResponseModel(
+        DeleteCategoryPengeluaranResponseModel(
             message: message ?? this.message,
             statusCode: statusCode ?? this.statusCode,
             data: data ?? this.data,
         );
 
-    factory DeleteCateogryPengeluaranResponseModel.fromRawJson(String str) => DeleteCateogryPengeluaranResponseModel.fromJson(json.decode(str));
+    factory DeleteCategoryPengeluaranResponseModel.fromRawJson(String str) => DeleteCategoryPengeluaranResponseModel.fromJson(json.decode(str));
 
     String toRawJson() => json.encode(toJson());
 
-    factory DeleteCateogryPengeluaranResponseModel.fromJson(Map<String, dynamic> json) => DeleteCateogryPengeluaranResponseModel(
+    factory DeleteCategoryPengeluaranResponseModel.fromJson(Map<String, dynamic> json) => DeleteCategoryPengeluaranResponseModel(
         message: json["message"],
         statusCode: json["status_code"],
         data: json["data"],
