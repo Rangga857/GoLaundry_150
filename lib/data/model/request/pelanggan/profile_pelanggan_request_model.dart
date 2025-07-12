@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 class ProfilePelangganRequestModel {
   final String? name;
   final String? phoneNumber;
-  final String? profilePicture;
+  final File? profilePicture; 
 
   ProfilePelangganRequestModel({
     this.name,
@@ -14,7 +15,7 @@ class ProfilePelangganRequestModel {
   ProfilePelangganRequestModel copyWith({
     String? name,
     String? phoneNumber,
-    String? profilePicture,
+    File? profilePicture,
   }) =>
       ProfilePelangganRequestModel(
         name: name ?? this.name,
@@ -31,12 +32,11 @@ class ProfilePelangganRequestModel {
       ProfilePelangganRequestModel(
         name: json["name"],
         phoneNumber: json["phone_number"],
-        profilePicture: json["profile_picture"],
+        profilePicture: null, 
       );
 
   Map<String, dynamic> toJson() => {
         "name": name,
         "phone_number": phoneNumber,
-        "profile_picture": profilePicture,
       };
 }

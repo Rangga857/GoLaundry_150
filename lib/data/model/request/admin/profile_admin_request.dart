@@ -5,14 +5,11 @@ class ProfileAdminRequestModel {
     final String? address;
     final double? latitude;
     final double? longitude;
-    final String? profilePicture;
-
     ProfileAdminRequestModel({
         this.name,
         this.address,
         this.latitude,
         this.longitude,
-        this.profilePicture,
     });
 
     ProfileAdminRequestModel copyWith({
@@ -27,7 +24,6 @@ class ProfileAdminRequestModel {
             address: address ?? this.address,
             latitude: latitude ?? this.latitude,
             longitude: longitude ?? this.longitude,
-            profilePicture: profilePicture ?? this.profilePicture,
         );
 
     factory ProfileAdminRequestModel.fromRawJson(String str) => ProfileAdminRequestModel.fromJson(json.decode(str));
@@ -39,7 +35,6 @@ class ProfileAdminRequestModel {
         address: json["address"],
         latitude: json["latitude"]?.toDouble(),
         longitude: json["longitude"]?.toDouble(),
-        profilePicture: json["profilePicture"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -47,6 +42,5 @@ class ProfileAdminRequestModel {
         "address": address,
         "latitude": latitude,
         "longitude": longitude,
-        "profilePicture": profilePicture,
     };
 }
