@@ -43,7 +43,6 @@ class Data {
     final int? laundryId;
     final String? name;
     final String? address;
-    final String? profilePicture;
     final String? latitude;
     final String? longitude;
 
@@ -51,7 +50,6 @@ class Data {
         this.laundryId,
         this.name,
         this.address,
-        this.profilePicture,
         this.latitude,
         this.longitude,
     });
@@ -68,7 +66,6 @@ class Data {
             laundryId: laundryId ?? this.laundryId,
             name: name ?? this.name,
             address: address ?? this.address,
-            profilePicture: profilePicture ?? this.profilePicture,
             latitude: latitude ?? this.latitude,
             longitude: longitude ?? this.longitude,
         );
@@ -81,7 +78,6 @@ class Data {
         laundryId: json["laundry_id"],
         name: json["name"],
         address: json["address"],
-        profilePicture: json["profile_picture"],
         latitude: json["latitude"],
         longitude: json["longitude"],
     );
@@ -90,7 +86,6 @@ class Data {
         "laundry_id": laundryId,
         "name": name,
         "address": address,
-        "profile_picture": profilePicture,
         "latitude": latitude,
         "longitude": longitude,
     };
