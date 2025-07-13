@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:laundry_app/core/components/spaces_height.dart';
-import 'package:laundry_app/core/constants/colors.dart'; // Menggunakan path AppColors yang benar
+import 'package:google_fonts/google_fonts.dart';
+import 'package:laundry_app/core/constants/colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -9,13 +9,16 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final Widget? prefixIcon;
-  final Widget? suffixIcon;
+  final Widget? suffixIcon; 
   final bool readOnly;
   final int maxLines;
   final String? validatorMessage;
   final FormFieldValidator<String>? customValidator;
   final ValueChanged<String>? onFieldSubmitted;
   final VoidCallback? onTap;
+  final bool? isPassword; 
+  final VoidCallback? onTapSuffixIcon; 
+  final bool isSuffixIconVisible; 
 
   const CustomTextField({
     super.key,
@@ -32,22 +35,29 @@ class CustomTextField extends StatelessWidget {
     this.customValidator,
     this.onFieldSubmitted,
     this.onTap,
+    this.isPassword, 
+    this.onTapSuffixIcon, 
+    this.isSuffixIconVisible = true, 
   });
 
   @override
   Widget build(BuildContext context) {
+    Widget? effectiveSuffixIcon = suffixIcon;
+    if (isPassword == true && effectiveSuffixIcon == null) {
+      effectiveSuffixIcon = GestureDetector(
+        onTap: onTapSuffixIcon,
+        child: Icon(
+          obscureText && isSuffixIconVisible
+              ? Icons.visibility
+              : Icons.visibility_off,
+          color: AppColors.grey,
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.035,
-            fontWeight: FontWeight.w600,
-            color: AppColors.black87,
-          ),
-        ),
-        const SpaceHeight(8.0),
         TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
@@ -67,30 +77,21 @@ class CustomTextField extends StatelessWidget {
           maxLines: maxLines,
           onFieldSubmitted: onFieldSubmitted,
           onTap: onTap,
+          style: GoogleFonts.poppins(color: AppColors.darkNavyBlue),
           decoration: InputDecoration(
-            labelText: label,
-            hintText: 'Enter $label',
+            hintText: label,
+            hintStyle: GoogleFonts.poppins(color: AppColors.grey),
             prefixIcon: prefixIcon,
-            suffixIcon: suffixIcon,
+            suffixIcon: effectiveSuffixIcon, 
+            filled: true,
+            fillColor: AppColors.primaryBlueLight.withOpacity(0.5),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.grey),
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.lightGrey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.primaryBlue, width: 2),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.red, width: 1),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.red, width: 2),
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide.none,
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           ),
