@@ -29,7 +29,7 @@ class ProfilePelangganResponseModel {
       ProfilePelangganResponseModel(
         message: json["message"],
         statusCode: json["status_code"],
-        data: json["data"] == null ? null : Data.fromJson(json["data"]), 
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
 
   String toRawJson() => json.encode(toJson());
