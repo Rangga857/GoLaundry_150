@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:laundry_app/data/repository/profilepelangganrepository/profile_pelanggan_repository.dart';
+import 'package:laundry_app/data/repository/profile_pelanggan_repository.dart';
 import 'package:laundry_app/presentation/pelanggan/profilepelanggan/bloc/profile_pelanggan_event.dart';
 import 'package:laundry_app/presentation/pelanggan/profilepelanggan/bloc/profile_pelanggan_state.dart';
 
@@ -25,8 +25,7 @@ class ProfilePelangganBloc extends Bloc<ProfilePelangganEvent, ProfilePelangganS
         event.requestModel,
       );
 
-      // Memeriksa statusCode untuk menentukan sukses atau error
-      if (response.statusCode == 201) { // Asumsi 201 Created untuk penambahan sukses
+      if (response.statusCode == 201) { 
         emit(ProfilePelangganAdded(profile: response));
       } else {
         emit(ProfilePelangganAddError(message: response.message ?? 'Unknown error occurred'));
@@ -44,8 +43,7 @@ class ProfilePelangganBloc extends Bloc<ProfilePelangganEvent, ProfilePelangganS
     try {
       final response = await profilePelangganRepository.getProfilePelanggan();
 
-      // Memeriksa statusCode untuk menentukan sukses atau error
-      if (response.statusCode == 200) { // Asumsi 200 OK untuk pengambilan sukses
+      if (response.statusCode == 200) { 
         emit(ProfilePelangganLoaded(profile: response));
       } else {
         emit(ProfilePelangganError(message: response.message ?? 'Unknown error occurred'));
