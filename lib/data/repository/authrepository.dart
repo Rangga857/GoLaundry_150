@@ -38,7 +38,6 @@ class AuthRepository {
             key: "userRole",
             value: loginResponse.data!.role!, 
           );
-          print("Token and Role saved: ${loginResponse.data!.token}, ${loginResponse.data!.role}");
         } else {
           return Left('Login response data is incomplete (token missing).');
         }
