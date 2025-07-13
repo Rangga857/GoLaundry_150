@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:laundry_app/core/components/spaces_height.dart';
-import 'package:laundry_app/core/constants/colors.dart'; 
+import 'package:laundry_app/core/constants/colors.dart'; // Menggunakan path AppColors yang benar
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -12,8 +12,10 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool readOnly;
   final int maxLines;
-  final String? validatorMessage; 
+  final String? validatorMessage;
   final FormFieldValidator<String>? customValidator;
+  final ValueChanged<String>? onFieldSubmitted;
+  final VoidCallback? onTap;
 
   const CustomTextField({
     super.key,
@@ -26,8 +28,10 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.readOnly = false,
     this.maxLines = 1,
-    this.validatorMessage, 
+    this.validatorMessage,
     this.customValidator,
+    this.onFieldSubmitted,
+    this.onTap,
   });
 
   @override
@@ -40,7 +44,7 @@ class CustomTextField extends StatelessWidget {
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.035,
             fontWeight: FontWeight.w600,
-            color: AppColors.black87, 
+            color: AppColors.black87,
           ),
         ),
         const SpaceHeight(8.0),
@@ -61,6 +65,8 @@ class CustomTextField extends StatelessWidget {
           keyboardType: keyboardType,
           readOnly: readOnly,
           maxLines: maxLines,
+          onFieldSubmitted: onFieldSubmitted,
+          onTap: onTap,
           decoration: InputDecoration(
             labelText: label,
             hintText: 'Enter $label',
@@ -68,19 +74,19 @@ class CustomTextField extends StatelessWidget {
             suffixIcon: suffixIcon,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.grey), 
+              borderSide: const BorderSide(color: AppColors.grey),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.lightGrey), 
+              borderSide: const BorderSide(color: AppColors.lightGrey),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.primaryBlue, width: 2), 
+              borderSide: const BorderSide(color: AppColors.primaryBlue, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(color: AppColors.red, width: 1), 
+              borderSide: const BorderSide(color: AppColors.red, width: 1),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),

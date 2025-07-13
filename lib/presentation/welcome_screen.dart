@@ -37,9 +37,13 @@ class WelcomeScreen extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
+                    // ignore: deprecated_member_use
                     Colors.black.withOpacity(0.0), 
+                    // ignore: deprecated_member_use
                     Colors.black.withOpacity(0.1), 
+                    // ignore: deprecated_member_use
                     Colors.black.withOpacity(0.2), 
+                    // ignore: deprecated_member_use
                     Colors.black.withOpacity(0.3),
                   ],
                   stops: const [0.0, 0.5, 0.7, 1.0],
