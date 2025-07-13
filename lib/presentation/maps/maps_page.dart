@@ -22,18 +22,28 @@ class _MapsPageState extends State<MapsPage> {
   CameraPosition? _initialCamera;
   Position? _currentPosition;
 
+  bool _isLoading = true;
+  String? _errorMessage;
+
   @override
   void initState() {
     super.initState();
-    _setupLocation();
+    _loadInitialLocation();
   }
-  Future<void> _setupLocation() async {
+
+  Future<void> _loadInitialLocation() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     try {
       final pos = await _getPermissions();
       _currentPosition = pos;
+
       _initialCamera = CameraPosition(
         target: LatLng(pos.latitude, pos.longitude),
-        zoom: 15.0, 
+        zoom: 15.0,
       );
 
       final placemarks = await placemarkFromCoordinates(
@@ -41,15 +51,23 @@ class _MapsPageState extends State<MapsPage> {
         _currentPosition!.longitude,
       );
 
-      final p = placemarks.first;
-      _currentAddress = '${p.street}, ${p.locality}, ${p.subAdministrativeArea}, ${p.administrativeArea}, ${p.country}';
+      if (placemarks.isNotEmpty) {
+        final p = placemarks.first;
+        _currentAddress = '${p.street}, ${p.locality}, ${p.subAdministrativeArea}, ${p.administrativeArea}, ${p.country}';
+      } else {
+        _currentAddress = 'Alamat tidak ditemukan untuk lokasi saat ini.';
+      }
 
-      setState(() {});
     } catch (e) {
-      setState(() {});
-      _showSnackBar('Error: ${e.toString()}'); 
+      _errorMessage = 'Error memuat lokasi: ${e.toString()}';
+      _showSnackBar(_errorMessage!);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
+
 
   Future<Position> _getPermissions() async {
     bool serviceEnabled;
@@ -172,7 +190,7 @@ class _MapsPageState extends State<MapsPage> {
               elevation: 4,
             ),
             onPressed: () {
-              Navigator.pop(context); 
+              Navigator.pop(context);
               Navigator.pop(
                 context,
                 {
@@ -193,20 +211,39 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        margin: const EdgeInsets.all(16),
-      ),
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+    }
+  }
+
+  // Metode untuk Zoom In
+  Future<void> _zoomIn() async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(
+      CameraUpdate.zoomIn(),
     );
   }
 
+  // Metode untuk Zoom Out
+  Future<void> _zoomOut() async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(
+      CameraUpdate.zoomOut(),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    if (_initialCamera == null) {
+    if (_isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(color: AppColors.primaryBlue),
@@ -214,13 +251,51 @@ class _MapsPageState extends State<MapsPage> {
       );
     }
 
+    if (_errorMessage != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Pilih Lokasi Laundry', style: TextStyle(color: AppColors.white)),
+          backgroundColor: AppColors.primaryBlue,
+          iconTheme: const IconThemeData(color: AppColors.white),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, color: AppColors.red, size: 60),
+                const SizedBox(height: 20),
+                Text(
+                  _errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16, color: AppColors.black87),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _loadInitialLocation,
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryBlue, foregroundColor: AppColors.white),
+                  child: const Text('Coba Lagi'),
+                ),
+                ElevatedButton(
+                  onPressed: () => context.pop(),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.grey, foregroundColor: AppColors.white),
+                  child: const Text('Kembali'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Pilih Lokasi Laundry', 
+          'Pilih Lokasi Laundry',
           style: TextStyle(
-            fontWeight: FontWeight.w600, 
-            fontSize: 20, 
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
             color: AppColors.white,
           ),
         ),
@@ -229,12 +304,12 @@ class _MapsPageState extends State<MapsPage> {
         backgroundColor: AppColors.primaryBlue,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20), 
+            bottom: Radius.circular(20),
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.white), 
-          onPressed: () => context.pop(), 
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.white),
+          onPressed: () => context.pop(),
         ),
         actions: [
           IconButton(
@@ -249,6 +324,7 @@ class _MapsPageState extends State<MapsPage> {
                     16,
                   ),
                 );
+                _onMapTap(LatLng(_currentPosition!.latitude, _currentPosition!.longitude));
               } else {
                 _showSnackBar('Lokasi saat ini tidak tersedia.');
               }
@@ -264,9 +340,20 @@ class _MapsPageState extends State<MapsPage> {
               child: GoogleMap(
                 initialCameraPosition: _initialCamera!,
                 myLocationEnabled: true,
-                myLocationButtonEnabled: false, 
+                myLocationButtonEnabled: false,
                 mapType: MapType.normal,
-                onMapCreated: (controller) => _controller.complete(controller),
+                onMapCreated: (controller) {
+                  _controller.complete(controller);
+                  if (_currentPosition != null) {
+                    controller.animateCamera(
+                      CameraUpdate.newLatLngZoom(
+                        LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+                        15.0,
+                      ),
+                    );
+                    _onMapTap(LatLng(_currentPosition!.latitude, _currentPosition!.longitude));
+                  }
+                },
                 markers: _pickedMarker != null ? {_pickedMarker!} : {},
                 onTap: _onMapTap,
                 zoomControlsEnabled: false,
@@ -283,10 +370,12 @@ class _MapsPageState extends State<MapsPage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
+                  // ignore: deprecated_member_use
                   color: AppColors.white.withOpacity(0.95),
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.black.withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
@@ -311,19 +400,19 @@ class _MapsPageState extends State<MapsPage> {
 
             if (_pickedAddress != null)
               Positioned(
-                bottom: 100, 
+                bottom: 100,
                 left: 16,
                 right: 16,
                 child: Card(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16), 
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  elevation: 6, 
+                  elevation: 6,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        const Icon(Icons.location_pin, color: Colors.green), 
+                        const Icon(Icons.location_pin, color: Colors.green),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
@@ -336,18 +425,45 @@ class _MapsPageState extends State<MapsPage> {
                   ),
                 ),
               ),
+
+            // Tombol Zoom In dan Zoom Out (ditambahkan di sini)
+            Positioned(
+              right: 20,
+              bottom: 250, // Sesuaikan posisi agar tidak bertabrakan dengan FAB lainnya
+              child: Column(
+                children: [
+                  FloatingActionButton(
+                    heroTag: 'zoom_in_btn',
+                    mini: true, // Membuat tombol lebih kecil
+                    backgroundColor: AppColors.primaryBlue,
+                    foregroundColor: AppColors.white,
+                    onPressed: _zoomIn,
+                    child: const Icon(Icons.add),
+                  ),
+                  const SizedBox(height: 10),
+                  FloatingActionButton(
+                    heroTag: 'zoom_out_btn',
+                    mini: true, // Membuat tombol lebih kecil
+                    backgroundColor: AppColors.primaryBlue,
+                    foregroundColor: AppColors.white,
+                    onPressed: _zoomOut,
+                    child: const Icon(Icons.remove),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
 
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end, // Agar FAB di sebelah kanan
         children: [
           if (_pickedAddress != null) ...[
             FloatingActionButton.extended(
               onPressed: _confirmSelection,
-              heroTag: 'confirm_selection', 
+              heroTag: 'confirm_selection',
               backgroundColor: AppColors.primaryBlue,
               icon: const Icon(Icons.check, color: AppColors.white),
               label: const Text('Pilih Alamat Ini', style: TextStyle(color: AppColors.white)),
@@ -361,15 +477,15 @@ class _MapsPageState extends State<MapsPage> {
                 });
                 _showSnackBar('Pilihan lokasi dihapus.');
               },
-              heroTag: 'clear_selection', 
+              heroTag: 'clear_selection',
               backgroundColor: AppColors.red,
-              icon: const Icon(Icons.clear, color: AppColors.white), 
+              icon: const Icon(Icons.clear, color: AppColors.white),
               label: const Text('Hapus Pilihan', style: TextStyle(color: AppColors.white)),
             ),
           ]
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, 
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
