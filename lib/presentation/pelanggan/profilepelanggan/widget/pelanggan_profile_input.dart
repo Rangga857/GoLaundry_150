@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:convert'; 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:laundry_app/core/components/custom_buttons.dart';
@@ -15,10 +13,20 @@ import 'package:laundry_app/presentation/pelanggan/profilepelanggan/bloc/profile
 import 'package:laundry_app/presentation/pelanggan/profilepelanggan/bloc/profile_pelanggan_state.dart';
 import 'package:laundry_app/presentation/picture/bloc/camera_bloc.dart';
 import 'package:laundry_app/presentation/picture/bloc/camera_event.dart';
-import 'package:laundry_app/presentation/picture/bloc/camera_state.dart'; 
+import 'package:laundry_app/presentation/picture/bloc/camera_state.dart';
+import 'package:logger/logger.dart';
 
 class ProfileInputScreen extends StatefulWidget {
-  const ProfileInputScreen({super.key});
+  final String? initialName;
+  final String? initialPhoneNumber;
+  final String? initialProfilePictureUrl;
+
+  const ProfileInputScreen({
+    super.key,
+    this.initialName,
+    this.initialPhoneNumber,
+    this.initialProfilePictureUrl,
+  });
 
   @override
   State<ProfileInputScreen> createState() => _ProfileInputScreenState();
@@ -30,10 +38,19 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
   final _formKey = GlobalKey<FormState>();
 
   File? _imageFile;
+  String? _currentProfilePictureUrl;
+  final Logger _logger = Logger();
 
   @override
   void initState() {
     super.initState();
+    _nameController.text = widget.initialName ?? '';
+    _phoneNumberController.text = widget.initialPhoneNumber ?? '';
+    _currentProfilePictureUrl = widget.initialProfilePictureUrl;
+    _logger.i('ProfileInputScreen initialized with:');
+    _logger.i('   Initial Name: ${widget.initialName}');
+    _logger.i('   Initial Phone: ${widget.initialPhoneNumber}');
+    _logger.i('   Initial Picture URL: ${widget.initialProfilePictureUrl}');
   }
 
   Future<void> _showImageSourceSelection() async {
@@ -50,6 +67,7 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
                 onTap: () {
                   Navigator.pop(context);
                   context.read<CameraBloc>().add(PickImageFromGallery());
+                  _logger.d('Picking image from gallery...');
                 },
               ),
               ListTile(
@@ -58,6 +76,7 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
                 onTap: () {
                   Navigator.pop(context);
                   context.read<CameraBloc>().add(OpenCameraAndCapture(context));
+                  _logger.d('Opening camera to capture photo...');
                 },
               ),
             ],
@@ -77,6 +96,11 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.initialName != null ? 'Edit Profil' : 'Lengkapi Profil Anda'),
+        backgroundColor: AppColors.primaryBlue,
+        foregroundColor: AppColors.white,
+      ),
       body: MultiBlocListener(
         listeners: [
           BlocListener<ProfilePelangganBloc, ProfilePelangganState>(
@@ -87,11 +111,24 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Profil berhasil ditambahkan!')),
                 );
+                _logger.i('Profile added successfully. Navigating to Home.');
                 context.pushAndRemoveUntil(const HomeScreen(), (route) => false);
               } else if (state is ProfilePelangganAddError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Gagal menambahkan profil: ${state.message}')),
                 );
+                _logger.e('Failed to add profile: ${state.message}');
+              } else if (state is ProfilePelangganUpdated) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Profil berhasil diperbarui!')),
+                );
+                _logger.i('Profile updated successfully. Popping back.');
+                context.pop(); // Go back to the profile view
+              } else if (state is ProfilePelangganUpdateError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Gagal memperbarui profil: ${state.message}')),
+                );
+                _logger.e('Failed to update profile: ${state.message}');
               }
             },
           ),
@@ -101,11 +138,14 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.snackbarMessage!)),
                 );
+                _logger.d('CameraBloc snackbar message: ${state.snackbarMessage}');
                 context.read<CameraBloc>().add(ClearSnackbar());
               }
               if (state is CameraReady && state.imageFile != null && _imageFile?.path != state.imageFile!.path) {
                 setState(() {
                   _imageFile = state.imageFile;
+                  _currentProfilePictureUrl = null;
+                  _logger.i('New image file selected: ${_imageFile?.path}');
                 });
               }
             },
@@ -119,9 +159,9 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Lengkapi Profil Anda',
-                    style: TextStyle(
+                  Text(
+                    widget.initialName != null ? 'Edit Profil Anda' : 'Lengkapi Profil Anda',
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: AppColors.primaryBlue,
@@ -132,22 +172,26 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
                     builder: (context, cameraState) {
                       final bool isCameraReady = cameraState is CameraReady;
                       return GestureDetector(
-                        onTap: isCameraReady ? _showImageSourceSelection : null, 
+                        onTap: isCameraReady ? _showImageSourceSelection : null,
                         child: CircleAvatar(
                           radius: 60,
                           backgroundColor: AppColors.lightGrey,
-                          backgroundImage: _imageFile != null ? FileImage(_imageFile!) : null,
-                          child: _imageFile == null
+                          backgroundImage: _imageFile != null
+                              ? FileImage(_imageFile!)
+                              : (_currentProfilePictureUrl != null
+                                    ? NetworkImage(_currentProfilePictureUrl!)
+                                    : null) as ImageProvider<Object>?,
+                          child: _imageFile == null && _currentProfilePictureUrl == null
                               ? (isCameraReady
-                                  ? const Icon(
-                                      Icons.add,
-                                      size: 40,
-                                      color: AppColors.grey,
-                                    )
-                                  : const CircularProgressIndicator( 
-                                      color: AppColors.primaryBlue,
-                                      strokeWidth: 3,
-                                    ))
+                                    ? const Icon(
+                                        Icons.add,
+                                        size: 40,
+                                        color: AppColors.grey,
+                                      )
+                                    : const CircularProgressIndicator(
+                                        color: AppColors.primaryBlue,
+                                        strokeWidth: 3,
+                                      ))
                               : null,
                         ),
                       );
@@ -184,20 +228,24 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
                             ? null
                             : () async {
                                 if (_formKey.currentState!.validate()) {
-                                  String? base64Image;
-                                  if (_imageFile != null) {
-                                    List<int> imageBytes = await _imageFile!.readAsBytes();
-                                    base64Image = base64Encode(imageBytes);
-                                  }
-
                                   final requestModel = ProfilePelangganRequestModel(
                                     name: _nameController.text,
                                     phoneNumber: _phoneNumberController.text,
-                                    profilePicture: base64Image,
+                                    profilePicture: _imageFile,
                                   );
-                                  context.read<ProfilePelangganBloc>().add(
-                                        AddProfilePelangganEvent(requestModel: requestModel),
-                                      );
+                                  _logger.d('Sending request model: ${requestModel.toJson()}');
+
+                                  if (widget.initialName != null) {
+                                    _logger.i('Dispatching UpdateProfilePelangganEvent');
+                                    context.read<ProfilePelangganBloc>().add(
+                                          UpdateProfilePelangganEvent(requestModel: requestModel),
+                                        );
+                                  } else {
+                                    _logger.i('Dispatching AddProfilePelangganEvent');
+                                    context.read<ProfilePelangganBloc>().add(
+                                          AddProfilePelangganEvent(requestModel: requestModel),
+                                        );
+                                  }
                                 }
                               },
                       );
