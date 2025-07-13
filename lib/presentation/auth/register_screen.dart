@@ -6,14 +6,14 @@ import 'package:laundry_app/data/model/request/auth/register_request_model.dart'
 import 'package:laundry_app/presentation/auth/bloc/register/register_bloc.dart';
 import 'package:laundry_app/presentation/auth/bloc/register/register_event.dart';
 import 'package:laundry_app/presentation/auth/bloc/register/register_state.dart';
-import 'package:laundry_app/presentation/auth/login_screen.dart'; 
+import 'package:laundry_app/presentation/auth/login_screen.dart';
 import 'package:laundry_app/core/components/custom_text_field.dart';
-import 'package:laundry_app/core/components/spaces_height.dart'; 
-import 'package:laundry_app/core/extensions/build_context_ext.dart'; 
+import 'package:laundry_app/core/components/spaces_height.dart';
+import 'package:laundry_app/core/extensions/build_context_ext.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
-  
+
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
@@ -21,8 +21,10 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController(); 
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   void dispose() {
@@ -35,13 +37,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       body: BlocListener<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state is RegisterSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
-            context.pushReplacement(const LoginScreen()); 
+            context.pushReplacement(const LoginScreen());
           } else if (state is RegisterFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error: ${state.error}')),
@@ -50,37 +53,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(32.0), 
+            padding: const EdgeInsets.all(32.0),
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset(
-                    'assets/images/logo.png', 
-                    height: 160, 
-                    width: 160, 
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.local_laundry_service,
-                        size: 160,
-                        color: AppColors.primaryBlue,
-                      );
-                    },
-                  ),
-                  const SpaceHeight(25), 
-
                   const Text(
                     'Create New Account',
                     style: TextStyle(
-                      fontSize: 32, 
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: AppColors.primaryBlue,
                     ),
                   ),
-                  const SpaceHeight(40), 
+                  const SpaceHeight(40),
                   CustomTextField(
                     controller: _emailController,
                     label: 'Email',
@@ -98,8 +86,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   CustomTextField(
                     controller: _passwordController,
                     label: 'Password',
-                    obscureText: true,
+                    obscureText: !_isPasswordVisible,
                     prefixIcon: const Icon(Icons.lock),
+                    isPassword: true,
+                    onTapSuffixIcon: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
                     validatorMessage: 'Please enter your password',
                     customValidator: (value) {
                       if (value != null && value.length < 6) {
@@ -108,12 +102,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SpaceHeight(20), 
+                  const SpaceHeight(20),
                   CustomTextField(
                     controller: _confirmPasswordController,
                     label: 'Confirm Password',
-                    obscureText: true,
+                    obscureText: !_isConfirmPasswordVisible,
                     prefixIcon: const Icon(Icons.lock),
+                    isPassword: true,
+                    onTapSuffixIcon: () {
+                      setState(() {
+                        _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                      });
+                    },
                     validatorMessage: 'Please confirm your password',
                     customValidator: (value) {
                       if (value != null && value != _passwordController.text) {
@@ -122,7 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SpaceHeight(30), 
+                  const SpaceHeight(30),
                   BlocBuilder<RegisterBloc, RegisterState>(
                     builder: (context, state) {
                       if (state is RegisterLoading) {
@@ -144,7 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       );
                     },
                   ),
-                  const SpaceHeight(20), 
+                  const SpaceHeight(20),
                   TextButton(
                     onPressed: () {
                       context.pushReplacement(const LoginScreen());
