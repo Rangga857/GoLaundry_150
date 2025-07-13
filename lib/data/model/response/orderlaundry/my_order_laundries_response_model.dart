@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class MyOrderLaundriesResponseModel {
-  final List<MyOrder> orders; // Renamed to MyOrder to avoid naming conflict
+  final List<MyOrder> orders; 
 
   MyOrderLaundriesResponseModel({
     required this.orders,
@@ -21,7 +21,7 @@ class MyOrderLaundriesResponseModel {
 
   factory MyOrderLaundriesResponseModel.fromJson(Map<String, dynamic> json) =>
       MyOrderLaundriesResponseModel(
-        orders: List<MyOrder>.from(json["orders"].map((x) => MyOrder.fromJson(x))), // Use MyOrder
+        orders: List<MyOrder>.from(json["orders"].map((x) => MyOrder.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -29,16 +29,16 @@ class MyOrderLaundriesResponseModel {
       };
 }
 
-// Kelas MyOrder yang digunakan di MyOrderLaundriesResponseModel
-class MyOrder { // Renamed to MyOrder
+class MyOrder { 
   final int id;
   final String profileName;
   final String pickupAddress;
   final String jenisPewangiName;
   final String serviceTitle;
   final String status;
-  final double pickupLatitude; // Changed to double
-  final double pickupLongitude; // Changed to double
+  final double pickupLatitude;
+  final double pickupLongitude; 
+  
 
   MyOrder({
     required this.id,
@@ -58,8 +58,8 @@ class MyOrder { // Renamed to MyOrder
     String? jenisPewangiName,
     String? serviceTitle,
     String? status,
-    double? pickupLatitude, // Changed to double
-    double? pickupLongitude, // Changed to double
+    double? pickupLatitude, 
+    double? pickupLongitude, 
   }) =>
       MyOrder(
         id: id ?? this.id,
@@ -83,8 +83,8 @@ class MyOrder { // Renamed to MyOrder
         jenisPewangiName: json["jenis_pewangi_name"],
         serviceTitle: json["service_title"],
         status: json["status"],
-        pickupLatitude: (json["pickup_latitude"] as num).toDouble(), // Parse as double
-        pickupLongitude: (json["pickup_longitude"] as num).toDouble(), // Parse as double
+        pickupLatitude: (json["pickup_latitude"] as num).toDouble(), 
+        pickupLongitude: (json["pickup_longitude"] as num).toDouble(), 
       );
 
   Map<String, dynamic> toJson() => {

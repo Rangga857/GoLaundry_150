@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class OrderLaundriesResponseModel {
   final String success;
-  final OrderDetail order; // Renamed to OrderDetail to avoid naming conflict
+  final OrderDetail order;
 
   OrderLaundriesResponseModel({
     required this.success,
@@ -25,7 +25,8 @@ class OrderLaundriesResponseModel {
 
   factory OrderLaundriesResponseModel.fromJson(Map<String, dynamic> json) =>
       OrderLaundriesResponseModel(
-        order: OrderDetail.fromJson(json["order"]), success: '', // Use OrderDetail
+        success: json["success"], 
+        order: OrderDetail.fromJson(json["order"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -34,55 +35,55 @@ class OrderLaundriesResponseModel {
       };
 }
 
-// Kelas OrderDetail yang digunakan di OrderLaundriesResponseModel
-class OrderDetail { // Renamed to OrderDetail
-  final int idProfile;
-  final int jenisPewangiId;
-  final int serviceId;
+class OrderDetail {
+  final int id; 
+  final String profileName;
   final String pickupAddress;
-  final double pickupLatitude; // Changed to double
-  final double pickupLongitude; // Changed to double
+  final String jenisPewangiName; 
+  final String serviceTitle; 
   final String status;
-  final DateTime updatedAt;
+  final double pickupLatitude;
+  final double pickupLongitude;
   final DateTime createdAt;
-  final int id;
+  final DateTime updatedAt;
+
 
   OrderDetail({
-    required this.idProfile,
-    required this.jenisPewangiId,
-    required this.serviceId,
+    required this.id,
+    required this.profileName,
     required this.pickupAddress,
+    required this.jenisPewangiName,
+    required this.serviceTitle,
+    required this.status,
     required this.pickupLatitude,
     required this.pickupLongitude,
-    required this.status,
-    required this.updatedAt,
     required this.createdAt,
-    required this.id,
+    required this.updatedAt,
   });
 
   OrderDetail copyWith({
-    int? idProfile,
-    int? jenisPewangiId,
-    int? serviceId,
-    String? pickupAddress,
-    double? pickupLatitude, // Changed to double
-    double? pickupLongitude, // Changed to double
-    String? status,
-    DateTime? updatedAt,
-    DateTime? createdAt,
     int? id,
+    String? profileName,
+    String? pickupAddress,
+    String? jenisPewangiName,
+    String? serviceTitle,
+    String? status,
+    double? pickupLatitude,
+    double? pickupLongitude,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) =>
       OrderDetail(
-        idProfile: idProfile ?? this.idProfile,
-        jenisPewangiId: jenisPewangiId ?? this.jenisPewangiId,
-        serviceId: serviceId ?? this.serviceId,
+        id: id ?? this.id,
+        profileName: profileName ?? this.profileName,
         pickupAddress: pickupAddress ?? this.pickupAddress,
+        jenisPewangiName: jenisPewangiName ?? this.jenisPewangiName,
+        serviceTitle: serviceTitle ?? this.serviceTitle,
+        status: status ?? this.status,
         pickupLatitude: pickupLatitude ?? this.pickupLatitude,
         pickupLongitude: pickupLongitude ?? this.pickupLongitude,
-        status: status ?? this.status,
-        updatedAt: updatedAt ?? this.updatedAt,
         createdAt: createdAt ?? this.createdAt,
-        id: id ?? this.id,
+        updatedAt: updatedAt ?? this.updatedAt,
       );
 
   factory OrderDetail.fromRawJson(String str) => OrderDetail.fromJson(json.decode(str));
@@ -90,28 +91,28 @@ class OrderDetail { // Renamed to OrderDetail
   String toRawJson() => json.encode(toJson());
 
   factory OrderDetail.fromJson(Map<String, dynamic> json) => OrderDetail(
-        idProfile: json["id_profile"],
-        jenisPewangiId: json["jenis_pewangi_id"],
-        serviceId: json["service_id"],
-        pickupAddress: json["pickup_address"],
-        pickupLatitude: (json["pickup_latitude"] as num).toDouble(), // Parse as double
-        pickupLongitude: (json["pickup_longitude"] as num).toDouble(), // Parse as double
-        status: json["status"],
-        updatedAt: DateTime.parse(json["updated_at"]),
-        createdAt: DateTime.parse(json["created_at"]),
         id: json["id"],
+        profileName: json["profile_name"], 
+        pickupAddress: json["pickup_address"],
+        jenisPewangiName: json["jenis_pewangi_name"], 
+        serviceTitle: json["service_title"], 
+        status: json["status"],
+        pickupLatitude: (json["pickup_latitude"] as num).toDouble(),
+        pickupLongitude: (json["pickup_longitude"] as num).toDouble(),
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "id_profile": idProfile,
-        "jenis_pewangi_id": jenisPewangiId,
-        "service_id": serviceId,
+        "id": id,
+        "profile_name": profileName,
         "pickup_address": pickupAddress,
+        "jenis_pewangi_name": jenisPewangiName,
+        "service_title": serviceTitle,
+        "status": status,
         "pickup_latitude": pickupLatitude,
         "pickup_longitude": pickupLongitude,
-        "status": status,
-        "updated_at": updatedAt.toIso8601String(),
         "created_at": createdAt.toIso8601String(),
-        "id": id,
+        "updated_at": updatedAt.toIso8601String(),
       };
 }
