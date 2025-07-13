@@ -103,7 +103,6 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     Emitter<CameraState> emit,
   ) async {
     if (state is! CameraReady) {
-      print('[CameraBloc] state is not ready, abort!');
       return;
     }
 
