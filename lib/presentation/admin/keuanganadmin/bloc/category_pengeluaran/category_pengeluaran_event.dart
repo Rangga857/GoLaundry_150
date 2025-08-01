@@ -9,7 +9,7 @@ abstract class CategoryPengeluaranEvent extends Equatable {
 }
 
 class AddCategoryPengeluaran extends CategoryPengeluaranEvent {
-  final CateogryPengeluaranRequestModel requestModel;
+  final CategoryPengeluaranRequestModel requestModel;
 
   const AddCategoryPengeluaran({required this.requestModel});
 
@@ -23,7 +23,7 @@ class GetAllCategoriesPengeluaran extends CategoryPengeluaranEvent {
 
 class UpdateCategoryPengeluaran extends CategoryPengeluaranEvent {
   final int id;
-  final CateogryPengeluaranRequestModel requestModel;
+  final CategoryPengeluaranRequestModel requestModel;
 
   const UpdateCategoryPengeluaran({required this.id, required this.requestModel});
 

@@ -3,12 +3,12 @@ import 'dart:convert';
 class GetMyPembayaranResponseModel {
     final String message;
     final int statusCode;
-    final List<DatumMyPembayaran> data;
+    final List<DatumMyPembayaran>? data;
 
     GetMyPembayaranResponseModel({
         required this.message,
         required this.statusCode,
-        required this.data,
+        this.data,
     });
 
     GetMyPembayaranResponseModel copyWith({
@@ -29,13 +29,15 @@ class GetMyPembayaranResponseModel {
     factory GetMyPembayaranResponseModel.fromJson(Map<String, dynamic> json) => GetMyPembayaranResponseModel(
         message: json["message"],
         statusCode: json["status_code"],
-        data: List<DatumMyPembayaran>.from(json["data"].map((x) => DatumMyPembayaran.fromJson(x))),
+       data: json["data"] == null
+            ? []
+            : List<DatumMyPembayaran>.from(json["data"].map((x) => DatumMyPembayaran.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "message": message,
         "status_code": statusCode,
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "data": data == null ? null : List<dynamic>.from(data!.map((x) => x.toJson()))
     };
 }
 

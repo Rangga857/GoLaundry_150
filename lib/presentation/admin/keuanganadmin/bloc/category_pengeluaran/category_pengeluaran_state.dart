@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
-import 'package:laundry_app/data/model/request/categorypengeluaran/edit_cateogory_pengeluaran_request_model.dart';
 import 'package:laundry_app/data/model/response/categorypengeluaran/Delete_category_pengeluaran_response_model.dart';
 import 'package:laundry_app/data/model/response/categorypengeluaran/category_pengeluaran_response_model.dart';
 import 'package:laundry_app/data/model/response/categorypengeluaran/get_all_cateogry_pengeluaran_response_model.dart';
+
+import '../../../../../data/model/response/categorypengeluaran/edit_category_pengeluaran_response_model.dart';
 
 abstract class CategoryPengeluaranState extends Equatable {
   const CategoryPengeluaranState();
@@ -34,7 +35,7 @@ class CategoryPengeluaranAdded extends CategoryPengeluaranState {
 }
 
 class CategoryPengeluaranUpdated extends CategoryPengeluaranState {
-  final EditCateogryPengeluaranResponseModel updatedCategory;
+  final EditCategoryPengeluaranResponseModel updatedCategory;
 
   const CategoryPengeluaranUpdated({required this.updatedCategory});
 

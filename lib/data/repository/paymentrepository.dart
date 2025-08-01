@@ -84,7 +84,7 @@ class PembayaranRepositoryImpl implements PembayaranRepository {
 
       if (response.statusCode == 200) {
         return Right(responseModel);
-      } else if (response.statusCode == 404 && responseModel.data.isEmpty) {
+      } else if (response.statusCode == 404 && responseModel.data!.isEmpty) {
         return Left('Tidak ada catatan pembayaran ditemukan untuk pelanggan ini.');
       } else {
         return Left(responseModel.message);

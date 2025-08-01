@@ -30,23 +30,21 @@ class CategoryPengeluaranBloc extends Bloc<CategoryPengeluaranEvent, CategoryPen
     }
   }
 
-  Future<void> _onGetAllCategoriesPengeluaran( // Nama metode ini dipanggil saat GetAllCategoriesPengeluaran di-dispatch
+  Future<void> _onGetAllCategoriesPengeluaran(
     GetAllCategoriesPengeluaran event,
     Emitter<CategoryPengeluaranState> emit,
   ) async {
-    print('DEBUG BLOC: _onGetAllCategoriesPengeluaran event received.'); // Debugging
     emit(CategoryPengeluaranLoading());
     try {
       final categories = await _repository.getAllCategoriesPengeluaran();
-      print('DEBUG BLOC: Fetched categories from repo. Count: ${categories.data.length}'); // Debugging
       if (categories.data.isNotEmpty) {
-        print('DEBUG BLOC: First category from repo: ${categories.data.first.nama}'); // Debugging
+        print('DEBUG BLOC: First category from repo: ${categories.data.first.nama}');
       } else {
-        print('DEBUG BLOC: Categories list from repository is empty.'); // Debugging
+        print('DEBUG BLOC: Categories list from repository is empty.'); 
       }
       emit(CategoryPengeluaranLoaded(categories: categories));
     } catch (e) {
-      print('DEBUG BLOC ERROR: Failed to fetch categories: $e'); // Debugging
+      print('DEBUG BLOC ERROR: Failed to fetch categories: $e'); 
       emit(CategoryPengeluaranError(message: e.toString()));
     }
   }
@@ -59,9 +57,9 @@ class CategoryPengeluaranBloc extends Bloc<CategoryPengeluaranEvent, CategoryPen
     try {
       final updatedCategory = await _repository.updateCategoryPengeluaran(event.id, event.requestModel);
       emit(CategoryPengeluaranUpdated(updatedCategory: updatedCategory));
-      add(const GetAllCategoriesPengeluaran()); // Refresh daftar setelah update
+      add(const GetAllCategoriesPengeluaran()); 
     } catch (e) {
-      print('DEBUG BLOC ERROR: UpdateCategoryPengeluaran failed: $e'); // Debugging
+      print('DEBUG BLOC ERROR: UpdateCategoryPengeluaran failed: $e'); 
       emit(CategoryPengeluaranError(message: e.toString()));
     }
   }
@@ -74,9 +72,9 @@ class CategoryPengeluaranBloc extends Bloc<CategoryPengeluaranEvent, CategoryPen
     try {
       final deleteResponse = await _repository.deleteCategoryPengeluaran(event.id);
       emit(CategoryPengeluaranDeleted(deleteResponse: deleteResponse));
-      add(const GetAllCategoriesPengeluaran()); // Refresh daftar setelah delete
+      add(const GetAllCategoriesPengeluaran()); 
     } catch (e) {
-      print('DEBUG BLOC ERROR: DeleteCategoryPengeluaran failed: $e'); // Debugging
+      print('DEBUG BLOC ERROR: DeleteCategoryPengeluaran failed: $e'); 
       emit(CategoryPengeluaranError(message: e.toString()));
     }
   }

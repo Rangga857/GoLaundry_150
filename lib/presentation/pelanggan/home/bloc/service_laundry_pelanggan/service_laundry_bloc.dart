@@ -15,7 +15,7 @@ class ServiceLaundryBloc extends Bloc<ServiceLaundryEvent, ServiceLaundryState> 
     Emitter<ServiceLaundryState> emit,
   ) async {
     emit(ServiceLaundryLoading());
-    final result = await repository.getAllServiceLaundryPelanggan(); // Customer-specific method
+    final result = await repository.getAllServiceLaundryPelanggan();
     result.fold(
       (failure) => emit(ServiceLaundryError(failure)),
       (success) => emit(ServiceLaundryAllLoaded(success)),

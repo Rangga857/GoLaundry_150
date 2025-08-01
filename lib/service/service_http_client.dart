@@ -38,19 +38,25 @@ class ServiceHttpClient {
       throw Exception('Failed to post data to $endpoint: $e');
     }
   }
-  Future<http.Response> get(String endpoint, {bool includeAuth = true}) async {
-    final url = Uri.parse('$baseUrl$endpoint');
+
+  Future<http.Response> get(String endpoint, {Map<String, dynamic>? queryParameters, bool includeAuth = true}) async {
+    Uri url = Uri.parse('$baseUrl$endpoint');
+
+    if (queryParameters != null && queryParameters.isNotEmpty) {
+      url = url.replace(queryParameters: queryParameters);
+    }
+
     try {
       final headers = await _getHeaders(includeAuth: includeAuth);
       final response = await http.get(
         url,
         headers: headers,
       );
-      print("GET Response status for $endpoint: ${response.statusCode}");
-      print("GET Response body for $endpoint: ${response.body}");
+      print("GET Response status for $url: ${response.statusCode}");
+      print("GET Response body for $url: ${response.body}"); 
       return response;
     } catch (e) {
-      throw Exception('Failed to get data from $endpoint: $e');
+      throw Exception('Failed to get data from $url: $e');
     }
   }
 
@@ -71,6 +77,7 @@ class ServiceHttpClient {
       throw Exception('Failed to put data to $endpoint: $e');
     }
   }
+
   Future<http.Response> delete(String endpoint, {bool includeAuth = true}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     try {
@@ -121,6 +128,7 @@ class ServiceHttpClient {
       throw Exception('Failed to post multipart data to $endpoint: $e');
     }
   }
+
   Future<http.Response> putMultipart(
     String endpoint, {
     Map<String, String>? fields,

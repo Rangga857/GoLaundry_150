@@ -52,7 +52,7 @@ class _MyPaymentsPageState extends State<MyPaymentsPage> {
           if (state is PembayaranLoading) {
             return const Center(child: CircularProgressIndicator(color: AppColors.white));
           } else if (state is MyPaymentsLoaded) {
-            if (state.payments.data.isEmpty) {
+            if (state.payments.data!.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -61,13 +61,13 @@ class _MyPaymentsPageState extends State<MyPaymentsPage> {
                     SizedBox(height: kDefaultPadding),
                     Text(
                       'Belum ada riwayat pembayaran.',
-                      style: GoogleFonts.poppins(fontSize: 16, color: AppColors.white),
+                      style: GoogleFonts.poppins(fontSize: 16, color: AppColors.darkSlateBlue),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: kDefaultPadding / 2),
                     Text(
                       'Lakukan pembayaran pertama Anda!',
-                      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.white),
+                      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.darkSlateBlue),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -76,9 +76,9 @@ class _MyPaymentsPageState extends State<MyPaymentsPage> {
             }
             return ListView.builder(
               padding: const EdgeInsets.all(kDefaultPadding),
-              itemCount: state.payments.data.length,
+              itemCount: state.payments.data?.length,
               itemBuilder: (context, index) {
-                final DatumMyPembayaran payment = state.payments.data[index];
+                final DatumMyPembayaran payment = state.payments.data![index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: kDefaultPadding),
                   elevation: 6,

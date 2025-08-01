@@ -5,10 +5,23 @@ import 'package:laundry_app/core/constants/constants.dart';
 import 'package:laundry_app/data/model/response/servicelaundry/get_all_service_laundry_response_model.dart';
 import 'package:laundry_app/presentation/pelanggan/home/bloc/service_laundry_pelanggan/service_laundry_bloc.dart';
 import 'package:laundry_app/presentation/pelanggan/home/bloc/service_laundry_pelanggan/service_laundry_state.dart';
+import 'package:laundry_app/presentation/pelanggan/home/bloc/service_laundry_pelanggan/service_laundry_event.dart'; // <--- PASTIKAN INI DI-IMPORT
 import 'package:laundry_app/presentation/pelanggan/home/components/card_service_laundry.dart';
 
-class ServiceLaundrySection extends StatelessWidget {
+class ServiceLaundrySection extends StatefulWidget { 
   const ServiceLaundrySection({super.key});
+
+  @override
+  State<ServiceLaundrySection> createState() => _ServiceLaundrySectionState();
+}
+
+class _ServiceLaundrySectionState extends State<ServiceLaundrySection> { 
+  @override
+  void initState() {
+    super.initState();
+    context.read<ServiceLaundryBloc>().add(GetServiceLaundryAllEvent());
+    print('ServiceLaundrySection: GetServiceLaundryAllEvent dispatched from initState!'); 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +41,7 @@ class ServiceLaundrySection extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Image.asset(
-                'assets/images/ls_verify.png', 
+                'assets/images/ls_verify.png',
                 height: 100,
               ),
             ],
@@ -40,7 +53,7 @@ class ServiceLaundrySection extends StatelessWidget {
             if (state is ServiceLaundryLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ServiceLaundryAllLoaded) {
-              if (state.serviceLaundryList.data.isEmpty) { 
+              if (state.serviceLaundryList.data.isEmpty) {
                 return const Center(child: Text('Tidak ada layanan laundry tersedia.'));
               }
               return SizedBox(
@@ -54,9 +67,9 @@ class ServiceLaundrySection extends StatelessWidget {
                     crossAxisSpacing: 0,
                     childAspectRatio: desiredCardWidth / 180,
                   ),
-                  itemCount: state.serviceLaundryList.data.length, 
+                  itemCount: state.serviceLaundryList.data.length,
                   itemBuilder: (context, index) {
-                    final DatumService service = state.serviceLaundryList.data[index]; 
+                    final DatumService service = state.serviceLaundryList.data[index];
                     return CardServiceLaundry(serviceLaundry: service);
                   },
                 ),

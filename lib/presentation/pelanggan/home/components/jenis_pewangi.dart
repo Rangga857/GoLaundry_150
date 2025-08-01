@@ -3,12 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laundry_app/presentation/pelanggan/home/bloc/jenis_pewangi_pelanggan/jenis_pewangi_bloc.dart';
 import 'package:laundry_app/presentation/pelanggan/home/bloc/jenis_pewangi_pelanggan/jenis_pewangi_state.dart';
+import 'package:laundry_app/presentation/pelanggan/home/bloc/jenis_pewangi_pelanggan/jenis_pewangi_event.dart'; // <--- IMPORT EVENT
 import 'package:laundry_app/presentation/pelanggan/home/components/card_jenis_pewangi.dart';
 import 'package:laundry_app/data/model/response/jenispewangi/get_all_jenis_pewangi_response_model.dart';
 import 'package:laundry_app/core/constants/constants.dart';
 
-class JenisPewangiSection extends StatelessWidget {
+class JenisPewangiSection extends StatefulWidget {
   const JenisPewangiSection({super.key});
+
+  @override
+  State<JenisPewangiSection> createState() => _JenisPewangiSectionState();
+}
+
+class _JenisPewangiSectionState extends State<JenisPewangiSection> { 
+  @override
+  void initState() {
+    super.initState();
+    context.read<JenisPewangiBloc>().add(GetJenisPewangiAllEvent());
+    print('JenisPewangiSection: GetJenisPewangiAllEvent dispatched from initState!'); 
+  }
 
   @override
   Widget build(BuildContext context) {

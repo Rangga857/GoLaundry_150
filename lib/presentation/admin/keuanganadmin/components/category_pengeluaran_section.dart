@@ -111,7 +111,7 @@ class _CategoryPengeluaranSectionState extends State<CategoryPengeluaranSection>
           );
         } else if (state is CategoryPengeluaranUpdated) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Kategori "${state.updatedCategory.nama}" berhasil diperbarui!')),
+            SnackBar(content: Text('Kategori "${state.updatedCategory.data.nama}" berhasil diperbarui!')),
           );
         } else if (state is CategoryPengeluaranDeleted) {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -11,8 +11,8 @@ import 'package:laundry_app/presentation/pelanggan/payment/view_payment_screen.d
 import 'package:laundry_app/presentation/picture/camera_page.dart';
 
 enum PaymentMethod {
-  cash('Cash'), 
-  bankTransfer('Bank Transfer');
+  cash('cash'), 
+  bankTransfer('bank transfer');
 
   const PaymentMethod(this.displayName);
   final String displayName;

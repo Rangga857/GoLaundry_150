@@ -60,10 +60,13 @@ class _AdminOrderScreenState extends State<AdminOrderScreen> {
       lastSearchQuery = currentBlocState.lastSearchQuery;
     }
 
+    String? statusFilterToSend = _selectedFilter == 'All' ? null : _selectedFilter.toLowerCase();
+    print('Fetching orders with statusFilter: $statusFilterToSend');
+
     context.read<AdminOrderBloc>().add(
           GetAdminOrdersAllEvent(
             searchQuery: lastSearchQuery,
-            statusFilter: _selectedFilter == 'All' ? null : _selectedFilter.toLowerCase(),
+            statusFilter: statusFilterToSend,
           ),
         );
   }

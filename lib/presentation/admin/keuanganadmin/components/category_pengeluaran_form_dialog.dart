@@ -41,7 +41,7 @@ class _CategoryPengeluaranFormDialogState extends State<CategoryPengeluaranFormD
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      final requestModel = CateogryPengeluaranRequestModel(nama: _nameController.text);
+      final requestModel = CategoryPengeluaranRequestModel(nama: _nameController.text);
 
       if (widget.categoryId == null) {
         context.read<CategoryPengeluaranBloc>().add(AddCategoryPengeluaran(requestModel: requestModel));

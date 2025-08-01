@@ -13,7 +13,10 @@ import 'package:laundry_app/data/model/response/orderlaundry/get_by_id_order_res
 
 abstract class OrderRepository {
   Future<Either<String, add_order_res.OrderLaundriesResponseModel>> addOrder(OrderLaundriesRequestModel request);
-  Future<Either<String, get_all_res.GetAllOrdersResponseModel>> getAllOrdersAdmin();
+  Future<Either<String, get_all_res.GetAllOrdersResponseModel>> getAllOrdersAdmin({
+    String? searchQuery,
+    String? statusFilter,
+  });
   Future<Either<String, my_order_res.MyOrderLaundriesResponseModel>> getOrdersByProfile();
   Future<Either<String, get_by_id_res.GetByIdOrderResponseModel>> getSpecificOrderForAdmin(int id);
   Future<Either<String, put_order_res.PutOrdesLaundriesResponseModel>> updateOrderStatus(int id, PutOrdesLaundriesRequestModel request);
@@ -61,15 +64,25 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<Either<String, get_all_res.GetAllOrdersResponseModel>> getAllOrdersAdmin() async {
+  Future<Either<String, get_all_res.GetAllOrdersResponseModel>> getAllOrdersAdmin({
+    String? searchQuery,
+    String? statusFilter,
+  }) async {
     try {
+      Map<String, dynamic> queryParams = {};
+
+      if (searchQuery != null && searchQuery.isNotEmpty) {
+        queryParams['searchQuery'] = searchQuery;
+      }
+      if (statusFilter != null && statusFilter.isNotEmpty) {
+        queryParams['statusFilter'] = statusFilter;
+      }
       final response = await httpClient.get(
-        'admin/orders', 
+        'admin/orders',
+        queryParameters: queryParams,
         includeAuth: true,
       );
-
       final responseModel = get_all_res.GetAllOrdersResponseModel.fromRawJson(response.body);
-
       if (response.statusCode == 200) {
         return Right(responseModel);
       } else {

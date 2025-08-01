@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:laundry_app/data/model/request/pembayaran/pembayaran_request_model.dart';
+import 'package:laundry_app/data/model/response/pembayaran/get_my_pembayaran_response_model.dart';
 import 'package:laundry_app/data/repository/paymentrepository.dart';
 import 'package:laundry_app/presentation/pelanggan/payment/bloc/payment/payment_pelanggan_event.dart';
 import 'package:laundry_app/presentation/pelanggan/payment/bloc/payment/payment_pelanggan_state.dart';
@@ -30,13 +31,25 @@ class PembayaranPelangganBloc extends Bloc<PembayaranPelangganEvent, PembayaranP
     }
   }
 
-  Future<void> _onGetMyPayments(GetMyPayments event, Emitter<PembayaranPelangganState> emit) async {
+ Future<void> _onGetMyPayments(GetMyPayments event, Emitter<PembayaranPelangganState> emit) async {
     emit(PembayaranLoading());
     try {
       final result = await pembayaranRepository.getPaymentsByPelanggan();
       result.fold(
-        (failure) => emit(PembayaranError(message: failure)),
-        (success) => emit(MyPaymentsLoaded(payments: success)),
+        (failure) {
+          if (failure.contains("Tidak ada catatan pembayaran ditemukan")) {
+             emit(MyPaymentsLoaded(payments: GetMyPembayaranResponseModel(
+                message: failure,
+                statusCode: 404, 
+                data: [], 
+             )));
+          } else {
+             emit(PembayaranError(message: failure));
+          }
+        },
+        (success) {
+            emit(MyPaymentsLoaded(payments: success));
+        },
       );
     } catch (e) {
       emit(PembayaranError(message: 'Terjadi kesalahan tidak terduga saat mengambil pembayaran: ${e.toString()}'));

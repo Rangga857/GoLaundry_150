@@ -47,15 +47,15 @@ class _OrderListSectionState extends State<OrderListSection> {
 
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'pesanan masuk':
+      case 'pending':
         return Colors.blue.shade700;
-      case 'menuju lokasi penjemputan':
+      case 'menuju lokasi':
         return Colors.orange.shade700;
-      case 'penimbangan':
+      case 'proses penimbangan':
         return Colors.purple.shade700;
       case 'proses laundry':
         return Colors.cyan.shade700;
-      case 'pengantaran':
+      case 'proses antar laundry':
         return Colors.green.shade700;
       case 'selesai':
         return Colors.grey.shade600;

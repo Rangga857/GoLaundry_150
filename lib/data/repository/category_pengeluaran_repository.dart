@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:laundry_app/data/model/request/categorypengeluaran/category_pengeluaran_request_model.dart';
-import 'package:laundry_app/data/model/request/categorypengeluaran/edit_cateogory_pengeluaran_request_model.dart';
 import 'package:laundry_app/data/model/response/categorypengeluaran/Delete_category_pengeluaran_response_model.dart';
-import 'package:laundry_app/data/model/response/categorypengeluaran/category_pengeluaran_response_model.dart'; 
-import 'package:laundry_app/data/model/response/categorypengeluaran/get_all_cateogry_pengeluaran_response_model.dart';
-import 'package:laundry_app/service/service_http_client.dart'; 
+import 'package:laundry_app/data/model/response/categorypengeluaran/category_pengeluaran_response_model.dart';
+import 'package:laundry_app/data/model/response/categorypengeluaran/edit_category_pengeluaran_response_model.dart'; 
+import 'package:laundry_app/service/service_http_client.dart';
+import '../model/response/categorypengeluaran/get_all_cateogry_pengeluaran_response_model.dart'; 
 
 class CategoryPengeluaranRepository {
   final ServiceHttpClient _httpClient;
@@ -12,7 +12,7 @@ class CategoryPengeluaranRepository {
   CategoryPengeluaranRepository(this._httpClient);
 
   Future<CategoryPengeluaranResponseModel> addCategoryPengeluaran(
-      CateogryPengeluaranRequestModel requestModel) async {
+      CategoryPengeluaranRequestModel requestModel) async {
     try {
       final response = await _httpClient.post(
         'admin/pengeluarancategory',
@@ -43,8 +43,8 @@ class CategoryPengeluaranRepository {
     }
   }
 
-  Future<EditCateogryPengeluaranResponseModel> updateCategoryPengeluaran(
-      int id, CateogryPengeluaranRequestModel requestModel) async {
+  Future<EditCategoryPengeluaranResponseModel> updateCategoryPengeluaran(
+      int id, CategoryPengeluaranRequestModel requestModel) async {
     try {
       final response = await _httpClient.put(
         'admin/pengeluarancategory/$id',
@@ -52,7 +52,7 @@ class CategoryPengeluaranRepository {
       );
 
       if (response.statusCode == 200) {
-        return EditCateogryPengeluaranResponseModel.fromJson(jsonDecode(response.body));
+        return EditCategoryPengeluaranResponseModel.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Failed to update category: ${response.statusCode} ${response.body}');
       }

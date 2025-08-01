@@ -1,24 +1,24 @@
 import 'dart:convert';
 
-class CateogryPengeluaranRequestModel {
+class CategoryPengeluaranRequestModel {
     final String nama;
 
-    CateogryPengeluaranRequestModel({
+    CategoryPengeluaranRequestModel({
         required this.nama,
     });
 
-    CateogryPengeluaranRequestModel copyWith({
+    CategoryPengeluaranRequestModel copyWith({
         String? nama,
     }) => 
-        CateogryPengeluaranRequestModel(
+        CategoryPengeluaranRequestModel(
             nama: nama ?? this.nama,
         );
 
-    factory CateogryPengeluaranRequestModel.fromRawJson(String str) => CateogryPengeluaranRequestModel.fromJson(json.decode(str));
+    factory CategoryPengeluaranRequestModel.fromRawJson(String str) => CategoryPengeluaranRequestModel.fromJson(json.decode(str));
 
     String toRawJson() => json.encode(toJson());
 
-    factory CateogryPengeluaranRequestModel.fromJson(Map<String, dynamic> json) => CateogryPengeluaranRequestModel(
+    factory CategoryPengeluaranRequestModel.fromJson(Map<String, dynamic> json) => CategoryPengeluaranRequestModel(
         nama: json["nama"],
     );
 
